@@ -11,6 +11,7 @@
 <body>
     @include('inc.navbar')
     <div class="container" style="margin-top: 10px">
+        @include('inc.alert')
         @yield('content')
     </div>
 </body>

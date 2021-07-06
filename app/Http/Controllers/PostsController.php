@@ -45,7 +45,7 @@ class PostsController extends Controller
         $newPost->image = 'NoImage';
         $newPost->save();
 
-        return redirect('/posts'); // Редирект к списку новостей
+        return redirect('/posts')->with('success', 'Создана новая запись'); // Редирект к списку новостей
     }
 
     /**
@@ -89,7 +89,7 @@ class PostsController extends Controller
         // $newPost->image = 'NoImage';
         $editPost->save();
 
-        return redirect('/posts'); // Редирект к списку новостей
+        return redirect('/posts')->with('success', 'Запись отредактирована'); // Редирект к списку новостей
     }
 
     /**
@@ -103,7 +103,7 @@ class PostsController extends Controller
         $deletePost = Post::find($id);
         $deletePost->delete();
 
-        return redirect('/posts');
+        return redirect('/posts')->with('success', 'Запись удалена');
     }
 
     private function validateForm($request) {
