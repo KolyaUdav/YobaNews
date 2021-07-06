@@ -22,6 +22,11 @@
           <a class="nav-link" href="#">Контакты</a>
         </li>
       </ul>
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a href="/posts/create" class="nav-link">Добавить новость</a>
+        </li>
+      </ul>
     </div>
   </div>
 </nav>

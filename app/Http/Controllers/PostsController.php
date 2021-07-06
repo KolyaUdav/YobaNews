@@ -14,7 +14,7 @@ class PostsController extends Controller
      */
     public function index()
     {
-        $posts = Post::latest()->paginate(3);
+        $posts = Post::latest()->paginate(10);
         return view('posts.list')->with('posts', $posts);
     }
 
@@ -25,7 +25,7 @@ class PostsController extends Controller
      */
     public function create()
     {
-        //
+        return view('posts.add');
     }
 
     /**
@@ -36,7 +36,15 @@ class PostsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validateForm($request);
+
+        $newPost = new Post;
+        $newPost->title = $request->input('title');
+        $newPost->body = $request->input('body');
+        $newPost->image = 'NoImage';
+        $newPost->save();
+
+        return redirect('/posts');
     }
 
     /**
@@ -84,5 +92,13 @@ class PostsController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    private function validateForm($request) {
+        $request->validate([
+            'title' => 'required|max:255',
+            'body' => 'required',
+            'image' => 'max:1999|mimes:jpg, png'
+        ]);
     }
 }

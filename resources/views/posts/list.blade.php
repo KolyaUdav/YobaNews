@@ -13,7 +13,7 @@
                     <h4 class="mb-1"><b>{{$post->title}}</b></h4>
                     <small>{{$post->created_at}}</small>
                     </div>
-                    <p class="mb-1">{{ Str::limit($post->body, 500) }}</p>
+                    <p class="mb-1">{{ Str::limit($post->body, 255) }}</p>
                     <small>User Name</small>
                 </a>
             @endforeach
