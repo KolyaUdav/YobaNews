@@ -14,7 +14,7 @@ class PostsController extends Controller
      */
     public function index()
     {
-        $posts = Post::latest()->paginate(10);
+        $posts = Post::latest()->paginate(10); // Ограничение в 10 постов на страницу
         return view('posts.list')->with('posts', $posts);
     }
 
@@ -36,15 +36,16 @@ class PostsController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validateForm($request);
+        $this->validateForm($request); // Валидация данных
 
+        // Создание поста 
         $newPost = new Post;
         $newPost->title = $request->input('title');
         $newPost->body = $request->input('body');
         $newPost->image = 'NoImage';
         $newPost->save();
 
-        return redirect('/posts');
+        return redirect('/posts'); // Редирект к списку новостей
     }
 
     /**
