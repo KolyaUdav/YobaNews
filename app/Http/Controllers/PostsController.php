@@ -100,7 +100,10 @@ class PostsController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $deletePost = Post::find($id);
+        $deletePost->delete();
+
+        return redirect('/posts');
     }
 
     private function validateForm($request) {

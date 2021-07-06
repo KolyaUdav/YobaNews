@@ -17,8 +17,11 @@
                         <p class="mb-1">{{ Str::limit($post->body, 255) }}</p>
                         <small>User Name</small>
                     </a>
-                    <div class="row" id="adminButtons" style="margin-bottom: 20px; padding-left: 20px;">
-                        <a href="/posts/{{$post->id}}/edit" class="btn btn-success" style="margin-top: 10px;"> Редактировать</a>
+                    <div class="d-flex flex-row" id="adminButtons">
+                        <div class="p-2">
+                            <a href="/posts/{{$post->id}}/edit" class="btn btn-success"> Редактировать</a>
+                        </div>
+                        @include('posts.inc.delete')
                     </div>
                 </div>
             @endforeach
