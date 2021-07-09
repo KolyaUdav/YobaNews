@@ -12,6 +12,9 @@
         </div>
         @include('posts.inc.delete')
     </div>
+    @if($post->image != 'NoImage')
+        <img src="{{ asset('storage/images/'.$post->image) }}">
+    @endif
     <div class="d-flex w-100 justify-content-between" style="margin-top: 10px">
         <h4 class="mb-1"><b>{{$post->title}}</b></h4>
         <small>{{$post->created_at}}</small>

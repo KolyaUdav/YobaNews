@@ -11,6 +11,9 @@
                 <div>
                     <a href="/posts/{{$post->id}}" class="list-group-item list-group-item-action" aria-current="true">
                         <div class="d-flex w-100 justify-content-between">
+                        @if($post->image != 'NoImage')
+                            <img src="{{ asset('storage/images/'.$post->image) }}">
+                        @endif
                         <h4 class="mb-1"><b>{{$post->title}}</b></h4>
                         <small>{{$post->created_at}}</small>
                         </div>

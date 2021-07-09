@@ -42,7 +42,11 @@ class PostsController extends Controller
         $newPost = new Post;
         $newPost->title = $request->input('title');
         $newPost->body = $request->input('body');
-        $newPost->image = 'NoImage';
+        $filenameToStore = 'NoImage';
+        if ($request->hasFile('image')) {
+            $filenameToStore = $this->uploadImage($request);
+        }
+        $newPost->image = $filenameToStore;
         $newPost->save();
 
         return redirect('/posts')->with('success', 'Создана новая запись'); // Редирект к списку новостей
@@ -86,7 +90,6 @@ class PostsController extends Controller
         $editPost = Post::find($id);
         $editPost->title = $request->input('title');
         $editPost->body = $request->input('body');
-        // $newPost->image = 'NoImage';
         $editPost->save();
 
         return redirect('/posts')->with('success', 'Запись отредактирована'); // Редирект к списку новостей
@@ -110,7 +113,16 @@ class PostsController extends Controller
         $request->validate([
             'title' => 'required|max:255',
             'body' => 'required',
-            'image' => 'max:1999|mimes:jpg, png'
+            'image' => 'max:1999|mimes:jpg, png|nullable'
         ]);
+    }
+
+    private function uploadImage($request) {
+        $filename = rand(1, 10000).'-'.time();
+        $extension = $request->file('image')->getClientOriginalExtension();
+        $filenameToStore = $filename.'.'.$extension;
+        $image_path = $request->file('image')->storeAs('public/images', $filenameToStore);
+
+        return $filenameToStore;
     }
 }
