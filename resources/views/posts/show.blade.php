@@ -12,13 +12,19 @@
         </div>
         @include('posts.inc.delete')
     </div>
-    @if($post->image != 'NoImage')
-        <img src="{{ asset('storage/images/'.$post->image) }}">
-    @endif
-    <div class="d-flex w-100 justify-content-between" style="margin-top: 10px">
-        <h4 class="mb-1"><b>{{$post->title}}</b></h4>
-        <small>{{$post->created_at}}</small>
+    <div  style="margin-top: 10px" class="row">
+        @if($post->image != 'NoImage')
+            <div class="col-md-4 col-sm-4">
+                <img style="width: 100%" src="{{ asset('storage/images/'.$post->image) }}">
+            </div>
+        @endif
+        <div class="col-md-8 col-sm-8">
+            <div class="d-flex w-100 justify-content-between">
+                <h4 class="mb-1"><b>{{$post->title}}</b></h4>
+                <small>{{$post->created_at}}</small>
+            </div>
+            <p class="mb-1">{{$post->body}}</p>
+            <small>User Name</small>
+        </div>
     </div>
-    <p class="mb-1">{{$post->body}}</p>
-    <small>User Name</small>
 @endsection

@@ -18,4 +18,5 @@ use App\Http\Controllers\IndexPageController;
 
 Route::get('/', [IndexPageController::class, 'showNewPosts']);
 
+Route::delete('/posts/{id}/delete-only-image', [PostsController::class, 'deleteOnlyImage']);
 Route::resource('posts', PostsController::class);

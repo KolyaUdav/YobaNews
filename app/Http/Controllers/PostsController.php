@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 use Illuminate\Http\Request;
 use App\Models\Post;
 
@@ -75,6 +77,7 @@ class PostsController extends Controller
     {
         $post = Post::find($id);
         return view('posts.edit')->with('post', $post);
+        // echo public_path('images\\'.$post->image);
     }
 
     /**
@@ -90,6 +93,13 @@ class PostsController extends Controller
         $editPost = Post::find($id);
         $editPost->title = $request->input('title');
         $editPost->body = $request->input('body');
+        // Если загружается изображение
+        if ($request->hasFile('image')) {
+            if ($editPost->image != 'NoImage') {
+                $this->deleteImage($editPost);
+            }
+            $editPost->image = $this->uploadImage($request);
+        }
         $editPost->save();
 
         return redirect('/posts')->with('success', 'Запись отредактирована'); // Редирект к списку новостей
@@ -104,9 +114,18 @@ class PostsController extends Controller
     public function destroy($id)
     {
         $deletePost = Post::find($id);
+        $this->deleteImage($deletePost);
         $deletePost->delete();
 
         return redirect('/posts')->with('success', 'Запись удалена');
+    }
+
+    public function deleteOnlyImage($id) {
+        $deleteImagePost = Post::find($id);
+        $this->deleteImage($deleteImagePost);
+        $deleteImagePost->save();
+
+        return redirect('posts/'.$id.'/edit')->with('success', 'Изображение удалено');
     }
 
     private function validateForm($request) {
@@ -118,11 +137,17 @@ class PostsController extends Controller
     }
 
     private function uploadImage($request) {
-        $filename = rand(1, 10000).'-'.time();
-        $extension = $request->file('image')->getClientOriginalExtension();
-        $filenameToStore = $filename.'.'.$extension;
-        $image_path = $request->file('image')->storeAs('public/images', $filenameToStore);
+        $filename = rand(1, 10000).'-'.time(); // генерация имени файла
+        $extension = $request->file('image')->getClientOriginalExtension(); // получаем расширение файла
+        $filenameToStore = $filename.'.'.$extension; // формируем имя файла вместе с расширением
+        $image_path = $request->file('image')->storeAs('public/images', $filenameToStore); // сохраняем изображение на сервере
+    
+        return $filenameToStore; // возвращаем полное имя для сохранения в базе
+    }
 
-        return $filenameToStore;
+    private function deleteImage($post) {
+        // File::delete('public/images/'.$post->image);
+        Storage::delete('public/images/'.$post->image);
+        $post->image = 'NoImage';
     }
 }

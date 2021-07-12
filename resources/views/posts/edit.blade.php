@@ -23,10 +23,20 @@
             </div>
             @if($post->image != 'NoImage')
                 <div class="edit-image">
-                    <img src="{{ $post->image }}">
+                    <div class="col-md-4 col-sm-4">
+                        <img style="100%" src="{{ asset('storage/images/'.$post->image) }}">
+                    </div>
                 </div>
             @endif
         </div>
         {{ Form::submit('Сохранить', ['class' => 'btn btn-primary']) }}
     {!! Form::close() !!}
+    @if ($post->image != 'NoImage')
+        {!! Form::open(['url' => 'posts/'.$post->id.'/delete-only-image', 'method' => 'POST']) !!}
+            <div class="form-group">
+                {{ Form::submit('Удалить изображение', ['class' => 'btn btn-danger']) }}
+            </div>
+            {{ Form::hidden('_method', 'DELETE'); }}
+        {!! Form::close() !!}
+    @endif
 @endsection

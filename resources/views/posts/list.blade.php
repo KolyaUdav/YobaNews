@@ -9,17 +9,22 @@
         @if (count($posts) > 0)
             @foreach ($posts as $post)
                 <div>
-                    <a href="/posts/{{$post->id}}" class="list-group-item list-group-item-action" aria-current="true">
-                        <div class="d-flex w-100 justify-content-between">
-                        @if($post->image != 'NoImage')
-                            <img src="{{ asset('storage/images/'.$post->image) }}">
-                        @endif
-                        <h4 class="mb-1"><b>{{$post->title}}</b></h4>
-                        <small>{{$post->created_at}}</small>
+                    <div class="card mb-3" style="max-width: 540px;">
+                        <div class="row g-0">
+                            @if ($post->image != "NoImage")
+                                <div class="col-md-4">
+                                    <img src="{{asset('storage/images/'.$post->image)}}" class="img-fluid rounded-start" alt="...">
+                                </div>
+                            @endif
+                            <div class="col-md-8">
+                            <div class="card-body">
+                                <a href="/posts/{{$post->id}}" class="card-title">{{$post->title}}</a>
+                                <p class="card-text">{{Str::limit($post->body, 244)}}</p>
+                                <p class="card-text"><small class="text-muted">{{$post->created_at}}</small></p>
+                            </div>
+                            </div>
                         </div>
-                        <p class="mb-1">{{ Str::limit($post->body, 255) }}</p>
-                        <small>User Name</small>
-                    </a>
+                        </div>
                     <div class="d-flex flex-row" id="adminButtons">
                         <div class="p-2">
                             <a href="/posts/{{$post->id}}/edit" class="btn btn-success"> Редактировать</a>
