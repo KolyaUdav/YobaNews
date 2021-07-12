@@ -77,7 +77,6 @@ class PostsController extends Controller
     {
         $post = Post::find($id);
         return view('posts.edit')->with('post', $post);
-        // echo public_path('images\\'.$post->image);
     }
 
     /**
@@ -120,12 +119,20 @@ class PostsController extends Controller
         return redirect('/posts')->with('success', 'Запись удалена');
     }
 
+    // Удаление изображения в режиме редактирования 
     public function deleteOnlyImage($id) {
-        $deleteImagePost = Post::find($id);
-        $this->deleteImage($deleteImagePost);
-        $deleteImagePost->save();
+        $deleteImagePost = Post::find($id); // Находим
+        $this->deleteImage($deleteImagePost); // Удаляем
+        $deleteImagePost->save(); // Сохраняем изменения
 
-        return redirect('posts/'.$id.'/edit')->with('success', 'Изображение удалено');
+        return redirect('posts/'.$id.'/edit')->with('success', 'Изображение удалено'); // Редиректимся
+    }
+
+    // Для главной страницы последние 5 постов
+    public function showLatestPosts() {
+        $posts = Post::latest()->take(5)->get();
+
+        return view('index')->with('posts', $posts);
     }
 
     private function validateForm($request) {

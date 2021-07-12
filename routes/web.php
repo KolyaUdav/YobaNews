@@ -16,7 +16,10 @@ use App\Http\Controllers\IndexPageController;
 |
 */
 
-Route::get('/', [IndexPageController::class, 'showNewPosts']);
-
+Route::get('/', [PostsController::class, 'showLatestPosts']);
 Route::delete('/posts/{id}/delete-only-image', [PostsController::class, 'deleteOnlyImage']);
 Route::resource('posts', PostsController::class);
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

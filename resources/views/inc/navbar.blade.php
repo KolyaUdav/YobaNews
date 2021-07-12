@@ -22,11 +22,41 @@
           <a class="nav-link" href="#">Контакты</a>
         </li>
       </ul>
+
+      @guest
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a href="/login" class="nav-link">Войти</a>
+          </li>
+          <li class="nav-item">
+            <a href="/register" class="nav-link">Регистрация</a>
+          </li>
+        </ul>
+      @endguest
+
+      @auth
       <ul class="navbar-nav">
         <li class="nav-item">
           <a href="/posts/create" class="nav-link">Добавить новость</a>
         </li>
+        <li class="nav-item dropdown">
+            <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                {{ Auth::user()->name }}
+            </a>
+
+            <div class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item" href="{{ route('logout') }}"
+                    onclick="event.preventDefault();
+                                  document.getElementById('logout-form').submit();">
+                    {{ __('Logout') }}
+                </a>
+                {!! Form::open(['route' => 'logout', 'method' => 'POST', 'id' => 'logout-form']) !!}
+                {!! Form::close() !!}
+            </div>
+        </li>
       </ul>
+      @endauth
+
     </div>
   </div>
 </nav>
