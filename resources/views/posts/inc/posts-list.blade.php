@@ -14,11 +14,12 @@
                                 <a href="/posts/{{$post->id}}" class="card-title">{{$post->title}}</a>
                                 <p class="card-text">{{Str::limit($post->body, 244)}}</p>
                                 <p class="card-text"><small class="text-muted">{{$post->created_at}}</small></p>
+                                <p class="card-text"><small class="text-muted">{{$post->user->name}}</small></p>
                             </div>
                         </div>
                     </div>
                 </div>
-                @include('posts.inc.adm_btns');
+                @include('posts.inc.adm_btns')
             </div>
         @endforeach
     @else

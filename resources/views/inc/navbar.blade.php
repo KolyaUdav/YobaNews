@@ -37,6 +37,9 @@
       @auth
       <ul class="navbar-nav">
         <li class="nav-item">
+          <a href="/posts/dashboard" class="nav-link">Dashboard</a>
+        </li>
+        <li class="nav-item">
           <a href="/posts/create" class="nav-link">Добавить новость</a>
         </li>
         <li class="nav-item dropdown">

@@ -6,9 +6,16 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
 use Illuminate\Http\Request;
 use App\Models\Post;
+use App\Models\User;
 
 class PostsController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth')->except(['show', 'index', 'showLatestPosts']);
+    }
+    
     /**
      * Display a listing of the resource.
      *
@@ -44,6 +51,7 @@ class PostsController extends Controller
         $newPost = new Post;
         $newPost->title = $request->input('title');
         $newPost->body = $request->input('body');
+        $newPost->user_id = auth()->user()->id;
         $filenameToStore = 'NoImage';
         if ($request->hasFile('image')) {
             $filenameToStore = $this->uploadImage($request);
@@ -63,7 +71,7 @@ class PostsController extends Controller
     public function show($id)
     {
         $post = Post::find($id);
-
+        
         return view('posts.show')->with('post', $post);
     }
 
@@ -76,7 +84,11 @@ class PostsController extends Controller
     public function edit($id)
     {
         $post = Post::find($id);
-        return view('posts.edit')->with('post', $post);
+        if ($this->checkPermission($post->user_id)) {
+            return view('posts.edit')->with('post', $post);
+        } else {
+            return redirect('/posts')->with('error', 'Ошибка доступа');
+        }
     }
 
     /**
@@ -113,19 +125,26 @@ class PostsController extends Controller
     public function destroy($id)
     {
         $deletePost = Post::find($id);
-        $this->deleteImage($deletePost);
-        $deletePost->delete();
-
-        return redirect('/posts')->with('success', 'Запись удалена');
+        if ($this->checkPermission($deletePost->user_id)) {
+            $this->deleteImage($deletePost);
+            $deletePost->delete();
+            return redirect('/posts')->with('success', 'Запись удалена');
+        } else {
+            return redirect('/posts')->with('error', 'Ошибка доступа');
+        }
     }
 
     // Удаление изображения в режиме редактирования 
     public function deleteOnlyImage($id) {
         $deleteImagePost = Post::find($id); // Находим
-        $this->deleteImage($deleteImagePost); // Удаляем
-        $deleteImagePost->save(); // Сохраняем изменения
-
-        return redirect('posts/'.$id.'/edit')->with('success', 'Изображение удалено'); // Редиректимся
+        // Проверяем, принадлежит ли пост данному пользователю
+        if ($this->checkPermission($deleteImagePost->user_id)) {
+            $this->deleteImage($deleteImagePost); // Удаляем
+            $deleteImagePost->save(); // Сохраняем изменения
+            return redirect('posts/'.$id.'/edit')->with('success', 'Изображение удалено'); // Редиректимся
+        } else {
+            return redirect('/posts')->with('error', 'Ошибка доступа');
+        }
     }
 
     // Для главной страницы последние 5 постов
@@ -133,6 +152,14 @@ class PostsController extends Controller
         $posts = Post::latest()->take(5)->get();
 
         return view('index')->with('posts', $posts);
+    }
+
+    // На странице dashboard отображение постов, созданных текущим пользователем
+    public function showDashboard() {
+        $user_id = auth()->user()->id;
+        $user = User::find($user_id);
+        
+        return view('posts.dashboard')->with('posts', $user->posts);
     }
 
     private function validateForm($request) {
@@ -153,8 +180,15 @@ class PostsController extends Controller
     }
 
     private function deleteImage($post) {
-        // File::delete('public/images/'.$post->image);
         Storage::delete('public/images/'.$post->image);
         $post->image = 'NoImage';
+    }
+
+    private function checkPermission($user_id) {
+        if ($user_id == auth()->user()->id) {
+           return true;
+        } else {
+            return false;
+        }
     }
 }
